@@ -19,7 +19,7 @@
  *
  */
 
-import { createRef, ReactElement } from 'react';
+import { createRef, ReactElement, useEffect, useState } from 'react';
 import { css, useTheme } from '@emotion/react';
 import { useRouter } from 'next/router';
 
@@ -36,6 +36,7 @@ import {
   TEAM_PATH,
   ACKNOWLEDGEMENTS_PATH,
   RELEASES_PATH,
+  VISUALIZATION_PATH,
 } from '../global/utils/constants';
 
 /**
@@ -66,9 +67,10 @@ const NavBar = (): ReactElement => {
     display: flex;
     flex: 0;
     font-weight: bold;
+    font-size: 15px;
     height: 100%;
     justify-content: center;
-    padding: 0 2rem;
+    padding: 0 1.5rem;
     text-decoration: none;
     white-space: nowrap;
     width: fit-content;
@@ -81,6 +83,13 @@ const NavBar = (): ReactElement => {
       ${activeLinkStyle}
     }
   `;
+
+  // viz feature flag
+  const [showViz, setShowViz] = useState<boolean>(false);
+  useEffect(() => {
+    const localShowViz = localStorage.getItem('SHOW_VIZ');
+    setShowViz(localShowViz === 'true');
+  }, []);
 
   return (
     <div
@@ -155,6 +164,18 @@ const NavBar = (): ReactElement => {
               Explore VirusSeq Data
             </a>
           </Link>
+          {showViz && (
+            <Link path={VISUALIZATION_PATH}>
+              <a
+                css={css`
+                  ${linkStyle}
+                  ${router.asPath.startsWith(VISUALIZATION_PATH) ? activeLinkStyle : ''}
+                `}
+              >
+                Visualize Data
+              </a>
+            </Link>
+          )}
           <Link path={RELEASES_PATH}>
             <a
               css={css`
