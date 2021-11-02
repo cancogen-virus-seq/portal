@@ -19,38 +19,40 @@
  *
  */
 
-import { ReactElement } from 'react';
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
+import { RefObject, useEffect, useRef, useState } from 'react';
 
-import PageLayout from '../../PageLayout';
-import defaultTheme from '../../theme';
-import Covizu from './covizu';
+interface ScriptTagElement extends HTMLScriptElement {
+  ref?: RefObject<HTMLInputElement>;
+}
 
-const StyledPageLayout = styled(PageLayout)`
-  ${({ theme }: { theme?: typeof defaultTheme }) =>
-    css`
-      background-color: ${theme?.colors.white};
-    `}
-`;
+const useScriptTag = ({
+  dependency,
+  parentRef,
+  src,
+}: {
+  dependency?: boolean;
+  parentRef: RefObject<HTMLInputElement>;
+  src: string;
+}): boolean => {
+  const [isScriptLoaded, setScriptLoaded] = useState(false);
+  const scriptRef = useRef(null);
 
-const FlexDiv = styled('div')`
-  display: flex;
-`;
+  useEffect(() => {
+    if (window && document && (!scriptRef || !scriptRef.current) && dependency !== false) {
+      const script: ScriptTagElement = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = src;
+      script.defer = true;
+      script.ref = scriptRef;
+      script.onload = () => {
+        setScriptLoaded(true);
+      };
 
-const VisualizationComponent = (): ReactElement => {
-  return (
-    <StyledPageLayout subtitle="Visualize Data">
-      <FlexDiv
-        css={(theme) => css`
-          justify-content: center;
-          padding: 40px 0 calc(${theme.dimensions.footer.height}px + 30px);
-        `}
-      >
-        <Covizu />
-      </FlexDiv>
-    </StyledPageLayout>
-  );
+      parentRef.current && parentRef.current.appendChild(script);
+    }
+  }, [dependency, parentRef, src]);
+
+  return isScriptLoaded;
 };
 
-export default VisualizationComponent;
+export default useScriptTag;
