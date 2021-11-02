@@ -70,6 +70,279 @@ const VisualizationComponent = () => {
           <>
             <div className="tooltip" id="tooltipContainer"></div>
 
+            <div className="app">
+              <div className="app-left">
+                <div className="bar" style={{ top: '10px', left: '10px', zIndex: 10 }}>
+                  <div className="legend-container">
+                    <label htmlFor="select-tree-colours">Colour tree by:</label>
+                    <select defaultValue="divergence" name="tree-colours" id="select-tree-colours">
+                      <option value="Region">Region</option>
+                      <option value="No. samples">No. samples</option>
+                      <option value="Collection date">Collection date</option>
+                      <option value="Divergence">Divergence</option>
+                    </select>
+                    <div className="legend" id="div-region-legend"></div>
+                    <div className="legend" id="svg-sample-legend"></div>
+                    <div className="legend" id="svg-coldate-legend"></div>
+                    <div className="legend" id="svg-diverge-legend"></div>
+                  </div>
+                  <div className="search-bar-container">
+                    <div id="search-bar">
+                      <input
+                        type="search"
+                        id="search-input"
+                        placeholder="e.g., B.1.617 or Manitoba"
+                      />
+                      <input id="start-date" className="dates" placeholder="Start" />
+                      to
+                      <input id="end-date" className="dates" placeholder="End" />
+                      <button
+                        // onclick="$('#help-search').dialog('open');"
+                        style={{ cursor: 'help' }}
+                      >
+                        &#128304;
+                      </button>
+                    </div>
+                    <br />
+
+                    <div id="navigation" style={{ paddingTop: '5px' }}>
+                      <button type="button" id="search-button">
+                        Search
+                      </button>
+                      <button type="button" id="clear_button">
+                        Clear
+                      </button>
+                      <button type="button" id="previous_button">
+                        Previous
+                      </button>
+                      <button type="button" id="next_button">
+                        Next
+                      </button>
+                      <div id="search_stats">
+                        <span id="curr_hit">0</span>
+                        <span>of</span>
+                        <span id="tot_hits">0</span>
+                        <span>points</span>
+                      </div>
+                    </div>
+                    <div style={{ paddingTop: '5px' }}>
+                      {/* <img id="loading" src="img/Loading_icon_cropped.gif" /> */}
+                      <span id="loading_text"></span>
+                      <span id="error_message"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="tree-beadplot">
+                  <div className="leftbox">
+                    <div className="floattitle">
+                      Time-scaled tree
+                      <button
+                        className="clicker"
+                        title="Download time-scaled tree"
+                        // onclick="save_timetree()"
+                      >
+                        &nbsp;&nbsp;NWK&nbsp;&nbsp;
+                      </button>
+                      <button
+                        className="clicker"
+                        title="Download lineage statistics as CSV"
+                        // onclick="export_csv();"
+                      >
+                        &nbsp;&nbsp;CSV&nbsp;&nbsp;
+                      </button>
+                      <button
+                        title="Timetree help"
+                        // onclick="$('#help-timetree').dialog('open');"
+                        style={{ cursor: 'help' }}
+                      >
+                        &#128304;
+                      </button>
+                    </div>
+                    <div
+                      className="floattitle"
+                      id="svg-timetreeaxis"
+                      style={{ top: '58px', zIndex: 13 }}
+                    ></div>
+                    <div className="tree-container">
+                      <div
+                        className="tree-content"
+                        id="svg-timetree"
+                        style={{ width: '250px', maxWidth: '250px' }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="middlebox">
+                    <div className="floattitle" id="beadplot-title">
+                      <div>Beadplot</div>
+                      <button
+                        className="clicker"
+                        title="Download beadplot as tree"
+                        // onclick="save_beadplot();"
+                      >
+                        &nbsp;&nbsp;NWK&nbsp;&nbsp;
+                      </button>
+                      <button
+                        className="clicker"
+                        title="Save beadplot as SVG"
+                        // onclick="export_svg();"
+                      >
+                        &nbsp;&nbsp;SVG&nbsp;&nbsp;
+                      </button>
+                      <button
+                        title="Beadplot help"
+                        // onclick="$('#help-beadplot').dialog('open');"
+                        style={{ cursor: 'help' }}
+                      >
+                        &#128304;
+                      </button>
+
+                      <div className="edge-cuttoff">
+                        <label style={{ verticalAlign: 'middle' }} htmlFor="vedge-slider">
+                          Edge cutoff:&nbsp;&nbsp;
+                        </label>
+                        <div id="left-arrow" className="arrow">
+                          <div style={{ transform: 'translateY(-25%)' }} className="larrow">
+                            &#8249;
+                          </div>
+                        </div>
+                        <div id="vedge-slider">
+                          <div id="custom-handle" className="ui-slider-handle"></div>
+                        </div>
+                        <div id="right-arrow" className="arrow">
+                          <div style={{ transform: 'translateY(-25%)' }} className="rarrow">
+                            &#8250;
+                          </div>
+                        </div>
+                      </div>
+
+                      <label className="expand" style={{ verticalAlign: 'middle' }}>
+                        &nbsp;&nbsp;Expand:&nbsp;
+                      </label>
+                      <label className="switch">
+                        <input type="checkbox" id="expand-option" />
+                        <span className="slider round"></span>
+                      </label>
+                    </div>
+                    <div
+                      className="floattitle"
+                      id="svg-clusteraxis"
+                      style={{ top: '58px', zIndex: 14 }}
+                    />
+                    <div id="beadplot-hscroll">
+                      <div id="inner-hscroll"></div>
+                    </div>
+                    <div className="beadplot-content" id="svg-cluster" />
+                  </div>
+                  <div id="beadplot-vscroll">
+                    <div id="inner-vscroll" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="app-right">
+                <div className="sticky">
+                  <div style={{ top: 0, right: 0, zIndex: 10, width: '270px' }}>
+                    <a
+                      href="https://github.com/PoonLab/covizu/tree/opendata"
+                      target="_blank"
+                      className="github-corner"
+                      aria-label="View source on GitHub"
+                    >
+                      {/* https://github.com/tholman/github-corners */}
+                      <svg
+                        width="80"
+                        height="80"
+                        viewBox="0 0 250 250"
+                        style={{
+                          fill: '#151513',
+                          color: '#fff',
+                          position: 'absolute',
+                          top: 0,
+                          border: 0,
+                          right: 0,
+                          zIndex: 21,
+                        }}
+                        aria-hidden="true"
+                      >
+                        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+                        <path
+                          d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+                          fill="currentColor"
+                          style={{ transformOrigin: '130px 106px' }}
+                          className="octo-arm"
+                        ></path>
+                        <path
+                          d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+                          fill="currentColor"
+                          className="octo-body"
+                        ></path>
+                      </svg>
+                    </a>
+                  </div>
+                  <div className="rightbox">
+                    <div style={{ paddingTop: '10px', cursor: 'help' }}>
+                      <h1>
+                        <button
+                        // onclick="$('#splash').dialog('open');"
+                        >
+                          <small>
+                            <i>open</i>
+                          </small>
+                          CoVizu
+                        </button>
+                      </h1>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '8pt',
+                      }}
+                    >
+                      <a href="index.html">en</a>
+                      <a href="index-es.html">es</a>
+                      <a href="index-fr.html">fr</a>
+                      <a href="index-zh.html">zh</a>
+                    </div>
+                    <div style={{ paddingTop: '10px', paddingRight: '6px' }}>
+                      <h3>
+                        Near real-time visualization of SARS-CoV-2 (hCoV-19) genomic variation
+                      </h3>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.9em' }} id="div-last-update"></div>
+                      <div style={{ fontSize: '0.9em' }} id="div-number-genomes"></div>
+                      <div style={{ fontSize: '0.9em' }} id="div-number-lineages"></div>
+                    </div>
+
+                    <div id="tabs">
+                      <ul>
+                        <li>
+                          <a href="#tabs-1">Countries</a>
+                        </li>
+                        <li>
+                          <a href="#tabs-2">Samples</a>
+                        </li>
+                      </ul>
+                      <div id="tabs-1">
+                        <div className="breaker" id="barplot"></div>
+                        <div
+                          style={{ overflowY: 'auto', overflowX: 'hidden', maxHeight: '200px' }}
+                          id="country-table"
+                        ></div>
+                      </div>
+                      <div id="tabs-2">
+                        <div
+                          style={{ overflowY: 'auto', overflowX: 'hidden', maxHeight: '200px' }}
+                          id="seq-table"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div id="splash" title="Welcome">
               <p>
                 <b>CoVizu</b> is an{' '}
