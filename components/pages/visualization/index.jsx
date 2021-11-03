@@ -27,10 +27,12 @@ import useScriptTag from '../../../global/hooks/useScriptTag';
 import PageLayout from '../../PageLayout';
 import './lib/jquery-ui.css';
 import styles from './VisualizationComponent.module.css';
+import { i18n_text } from './utils';
 
 const VisualizationComponent = () => {
   const scriptRef = useRef(null);
-  const dialogRef = useRef(null);
+  const openHelpSearchRef = useRef(null);
+  const helpSearchRef = useRef(null);
 
   const jQueryLoaded = useScriptTag({
     parentRef: scriptRef,
@@ -48,17 +50,44 @@ const VisualizationComponent = () => {
     const hasjQueryUI = !!(jQueryUILoaded && window.jQuery);
 
     // store ref.current, in case it changes.
-    const scriptRef = dialogRef.current;
+    const scriptRefCurrent = scriptRef.current;
+    const openHelpSearchRefCurrent = openHelpSearchRef.current;
+    const helpSearchRefCurrent = helpSearchRef.current;
 
     if (hasjQueryUI) {
       // instantiate jQuery & jQuery-UI functions
-      scriptRef && $(scriptRef).tooltip({ show: null });
+
+      // tooltips
+      scriptRefCurrent && $(scriptRefCurrent).tooltip({ show: null });
+
+      // dialogs
+
+      // help search dialog
+      helpSearchRefCurrent &&
+        $(helpSearchRefCurrent).dialog({
+          autoOpen: false,
+          width: 600,
+          buttons: [
+            {
+              text: i18n_text.got_it,
+              click: function () {
+                helpSearchRefCurrent && $(helpSearchRefCurrent).dialog('close');
+              },
+            },
+          ],
+        });
+      openHelpSearchRefCurrent &&
+        $(openHelpSearchRefCurrent).on('click', () => {
+          helpSearchRefCurrent && $(helpSearchRefCurrent).dialog('open');
+        });
     }
 
     return () => {
       // cleanup
       if (hasjQueryUI) {
-        scriptRef && $(scriptRef).tooltip('destroy');
+        scriptRefCurrent && $(scriptRefCurrent).tooltip('destroy');
+        helpSearchRefCurrent && $(helpSearchRefCurrent).dialog('destroy');
+        openHelpSearchRefCurrent && $(openHelpSearchRefCurrent).off('click');
       }
     };
   }, [jQueryUILoaded]);
@@ -96,10 +125,7 @@ const VisualizationComponent = () => {
                       <input id="start-date" className="dates" placeholder="Start" />
                       to
                       <input id="end-date" className="dates" placeholder="End" />
-                      <button
-                        // onclick="$('#help-search').dialog('open');"
-                        style={{ cursor: 'help' }}
-                      >
+                      <button ref={openHelpSearchRef} style={{ cursor: 'help' }}>
                         &#128304;
                       </button>
                     </div>
@@ -478,7 +504,7 @@ const VisualizationComponent = () => {
               </p>
             </div>
 
-            <div id="help-search" title="Help: Search interface">
+            <div id="help-search" title="Help: Search interface" ref={helpSearchRef}>
               <p>
                 Since there is an overwhelming number of sampled infections that we are trying to
                 visualize here, we have built a basic search interface that you can interact with
