@@ -22,8 +22,8 @@
 import { ReactElement } from 'react';
 import { css, useTheme } from '@emotion/react';
 
+import { INTERNAL_PATHS } from '../../../global/utils/constants';
 import defaultTheme from '../../theme';
-import { EXPLORER_PATH, TEAM_PATH, ACKNOWLEDGEMENTS_PATH } from '../../../global/utils/constants';
 import { StyledLinkAsButton, InternalLink as Link } from '../../Link';
 import { MapleLeaf } from '../../theme/icons';
 import ReleaseData from './ReleaseData';
@@ -124,7 +124,7 @@ const HeroBanner = (): ReactElement => {
             display: flex;
           `}
         >
-          <Link path={EXPLORER_PATH}>
+          <Link path={INTERNAL_PATHS.EXPLORER}>
             <StyledLinkAsButton
               css={css`
                 ${theme.typography.button};
@@ -145,7 +145,7 @@ const HeroBanner = (): ReactElement => {
             </StyledLinkAsButton>
           </Link>
 
-          <Link path={TEAM_PATH}>
+          <Link path={INTERNAL_PATHS.TEAM}>
             <StyledLinkAsButton
               css={css`
                 ${theme.typography.button};
@@ -166,7 +166,7 @@ const HeroBanner = (): ReactElement => {
             </StyledLinkAsButton>
           </Link>
 
-          <Link path={ACKNOWLEDGEMENTS_PATH}>
+          <Link path={INTERNAL_PATHS.ACKNOWLEDGEMENTS}>
             <StyledLinkAsButton
               css={css`
                 ${theme.typography.button};
