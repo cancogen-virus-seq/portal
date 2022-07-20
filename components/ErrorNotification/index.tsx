@@ -84,7 +84,7 @@ const ErrorNotification = ({
         <div>
           <ErrorTitle size={size}>
             <ErrorIcon
-              {...getIconSize(size)}
+              size={getIconSize(size)}
               style={css`
                 ${getIconStyle(size)}
               `}
@@ -112,7 +112,7 @@ const ErrorNotification = ({
         >
           <span>
             <ErrorIcon
-              {...getIconSize(size)}
+              size={getIconSize(size)}
               style={css`
                 ${getIconStyle(size)}
               `}
