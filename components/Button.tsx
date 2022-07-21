@@ -78,7 +78,9 @@ const Button = React.forwardRef<
   (
     {
       children,
-      onClick = (e) => {},
+      onClick = (e) => {
+        // console.log('nada');
+      },
       disabled = false,
       isAsync = false,
       className,
