@@ -363,6 +363,7 @@ const RepoTable = (props: PageContentProps): ReactElement => {
     NEXT_PUBLIC_ARRANGER_API,
     NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS,
     NEXT_PUBLIC_ARRANGER_PROJECT_ID,
+    NEXT_PUBLIC_ENABLE_DOWNLOADS,
     NEXT_PUBLIC_SINGULARITY_API_URL,
   } = getConfig();
 
@@ -455,7 +456,7 @@ const RepoTable = (props: PageContentProps): ReactElement => {
       <div css={getTableStyle(theme)}>
         <Table
           {...props}
-          allowTSVExport
+          allowTSVExport={NEXT_PUBLIC_ENABLE_DOWNLOADS}
           columnDropdownText="Columns"
           downloadUrl={urlJoin(
             NEXT_PUBLIC_ARRANGER_API,
@@ -463,7 +464,7 @@ const RepoTable = (props: PageContentProps): ReactElement => {
             'download',
           )}
           enableSelectedTableRowsExporterFilter
-          exporter={customExporters}
+          exporter={NEXT_PUBLIC_ENABLE_DOWNLOADS ? customExporters : []}
           exporterLabel="Download Dataset"
           showFilterInput={false}
         />
